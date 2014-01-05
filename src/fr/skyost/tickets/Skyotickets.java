@@ -46,7 +46,7 @@ public class Skyotickets extends JavaPlugin {
 			command.setExecutor(executor);
 			Bukkit.getPluginManager().registerEvents(new EventsListener(), this);
 			if(config.EnableUpdater) {
-				new Skyupdater(this, 00000, this.getFile(), true, true);
+				new Skyupdater(this, 71984, this.getFile(), true, true);
 			}
 			new MetricsLite(this).start();
 		}
