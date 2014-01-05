@@ -1,0 +1,76 @@
+name: Skyotickets
+main: fr.skyost.tickets.Skyotickets
+description: A powerful ticket plugin.
+version: 0.1
+author: Skyost
+website: http://www.skyost.eu
+commands:
+ ticket:
+  aliases: [tk]
+  description: Make a ticket.
+  usage: /ticket <text>.
+  permission: ticket.request
+ mytickets:
+  aliases: [mtk]
+  description: View your tickets.
+  usage: /mytickets.
+  permission: ticket.mytickets
+ mtickets:
+  aliases: [mticket, manage-ticket, manage-tickets]
+  description: View your tickets.
+  usage: /mtickets view <player> <id>, delete <player> <id>, claim [player] [id] or status [player] [id].
+permissions:
+ ticket.*:
+  description: Give access to all commands (and sub-commands).
+  default: false
+  children:
+   ticket.view.*: true
+   ticket.delete.*: true
+   ticket.request: true
+   ticket.mytickets: true
+   ticket.claim.ticket: true
+   ticket.status.ticket: true
+ ticket.view.*:
+  description: Give access to all 'view' commands (and sub-commands).
+  default: false
+  children:
+   ticket.view.ticket: true
+   ticket.view.player: true
+   ticket.view.all: true
+ ticket.delete.*:
+  description: Give access to all 'delete' commands (and sub-commands).
+  default: false
+  children:
+   ticket.delete.ticket: true
+   ticket.delete.player: true
+   ticket.delete.all: true
+ ticket.request:
+  default: true
+  description: Allow you to use /ticket <text>.
+ ticket.mytickets:
+  default: true
+  description: Allow you to use /mytickets.
+ ticket.view.ticket:
+  default: op
+  description: Allow you to use /mtickets view <player> <id>.
+ ticket.view.player:
+  default: op
+  description: Allow you to use /mtickets view <player>.
+ ticket.view.all:
+  default: op
+  description: Allow you to use /mtickets view.
+ ticket.delete.ticket:
+  default: op
+  description: Allow you to use /mtickets delete <player> <id>.
+ ticket.delete.player:
+  default: op
+  description: Allow you to use /mtickets delete <player>.
+ ticket.delete.all:
+  default: op
+  description: Allow you to use /mtickets delete.
+ ticket.claim.ticket:
+  default: op
+  description: Allow you to use /mtickets claim <player> <id>.
+ ticket.status.ticket:
+  default: op
+  description: Allow you to use /mtickets status <player> <id>.
