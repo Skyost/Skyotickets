@@ -5,7 +5,7 @@ import fr.skyost.tickets.utils.Config;
 
 public class ConfigFile extends Config {
 	
-	public String FormattedString = "[STATUS : /status/]/n/[ID : /id/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z /z/]/n/[CLAIMED BY : /owner/]";
+	public String FormattedString = "[STATUS : /status/]/n/[ID : /id/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owner/]";
 	public String DateFormat = "MM-dd-yyyy HH:mm:ss";
 	public String TicketsFolder;
 	public int MaxTicketsByPlayer = -1;

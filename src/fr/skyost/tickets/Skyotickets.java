@@ -42,7 +42,7 @@ public class Skyotickets extends JavaPlugin {
 			command.setExecutor(executor);
 			this.getCommand("mytickets").setExecutor(executor);
 			command = this.getCommand("mtickets");
-			command.setUsage(ChatColor.RED + "/mtickets view <player> <id>, delete <player> <id>, claim [player] [id] or status [player] [id].");
+			command.setUsage(ChatColor.RED + "/mtickets view <player> <id>, delete <player> <id>, claim [player] [id], status [player] [id] or teleport (or tp) [player] [id].");
 			command.setExecutor(executor);
 			Bukkit.getPluginManager().registerEvents(new EventsListener(), this);
 			if(config.EnableUpdater) {

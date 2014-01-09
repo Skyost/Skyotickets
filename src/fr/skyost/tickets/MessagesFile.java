@@ -23,6 +23,7 @@ public class MessagesFile extends Config {
 	public String Messages_14 = "§4You you cannot post a ticket anymore. Please wait that a moderator clear your ticket(s).";
 	public String Messages_15 = "You have /n/ new ticket(s).";
 	public String Messages_16 = "The above list is scrollable.";
+	public String Messages_17 = "§4The world specified in this ticket was not found. Please try to teleport yourself at the ticket's location.";
 	
     public MessagesFile(Plugin plugin) {
 		CONFIG_FILE = new File(plugin.getDataFolder(), "messages.yml");

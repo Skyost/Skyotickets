@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,6 +50,7 @@ public class CommandsExecutor implements CommandExecutor {
 					sender.sendMessage(Skyotickets.messages.Messages_2);
 				}
 				catch(IOException ex) {
+					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 			}
@@ -139,6 +141,7 @@ public class CommandsExecutor implements CommandExecutor {
 					sender.sendMessage(ticket.getFormattedString());
 				}
 				catch(IOException ex) {
+					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -189,6 +192,7 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
+					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -221,6 +225,7 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
+					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -261,6 +266,41 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
+					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					ex.printStackTrace();
+				}
+				break;
+			case "teleport":
+			case "tp":
+				try {
+					if(sender instanceof Player) {
+						if(!sender.hasPermission("ticket.teleport.ticket")) {
+							sender.sendMessage(ChatColor.RED + "You don't have permission to perform this action.");
+							return true;
+						}
+						if(args.length < 3) {
+							sender.sendMessage(ChatColor.RED + "/mtickets teleport (or tp) <player> <id>.");
+							return true;
+						}
+						ticket = Skyotickets.getTicket(args[1], args[2]);
+						if(ticket == null) {
+							sender.sendMessage(Skyotickets.messages.Messages_7);
+							return true;
+						}
+						final String[] location = ticket.getLocation();
+						final World world = Bukkit.getWorld(location[0]);
+						if(world == null) {
+							sender.sendMessage(Skyotickets.messages.Messages_17);
+							return true;
+						}
+						((Player)sender).teleport(new Location(world, Integer.parseInt(location[1]), Integer.parseInt(location[2]), Integer.parseInt(location[3])));
+					}
+					else {
+						sender.sendMessage(ChatColor.RED + "Please do this from the game !");
+					}
+				}
+				catch(IOException ex) {
+					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
