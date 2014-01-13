@@ -11,6 +11,13 @@ public class ConfigFile extends Config {
 	public int MaxTicketsByPlayer = -1;
 	public boolean EnableUpdater = true;
 	
+	public boolean Socket_Use = false;
+	public boolean Socket_Log = true;
+	public String Socket_Host = "localhost";
+	public int Socket_Port = 4343;
+	public String Socket_Password = "password";
+	public String Socket_Name = "Admin";
+	
     public ConfigFile(final File dataFolder) {
 		CONFIG_FILE = new File(dataFolder, "config.yml");
 		CONFIG_HEADER = "##################################################### #";

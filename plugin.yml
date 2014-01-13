@@ -1,7 +1,7 @@
 name: Skyotickets
 main: fr.skyost.tickets.Skyotickets
 description: A powerful ticket plugin.
-version: 0.2
+version: 0.3
 author: Skyost
 website: http://www.skyost.eu
 commands:
@@ -46,7 +46,7 @@ permissions:
    ticket.delete.all: true
  ticket.request:
   default: true
-  description: Allow you to use /ticket <text>.
+  description: Allow you to use /ticket [text].
  ticket.mytickets:
   default: true
   description: Allow you to use /mytickets.
@@ -70,10 +70,10 @@ permissions:
   description: Allow you to use /mtickets delete.
  ticket.claim.ticket:
   default: op
-  description: Allow you to use /mtickets claim <player> <id>.
+  description: Allow you to use /mtickets claim [player] [id].
  ticket.status.ticket:
   default: op
-  description: Allow you to use /mtickets status <player> <id>.
+  description: Allow you to use /mtickets status [player] [id].
  ticket.teleport.ticket:
   default: op
-  description: Allow you to use /mtickets teleport <player> <id>.
+  description: Allow you to use /mtickets teleport [player] [id].

@@ -130,6 +130,9 @@ public class Ticket {
 		return Skyotickets.config.FormattedString.replaceAll("/status/", status.name()).replaceAll("/id/", id).replaceAll("/date/", date).replaceAll("/player/", player).replaceAll("/message/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/owner/", owner == null ? "Nobody" : owner).replaceAll("/n/", "\n");
 	}
 
+	public final String getFormattedString(final String lineSeparator) {
+		return Skyotickets.config.FormattedString.replaceAll("/status/", status.name()).replaceAll("/id/", id).replaceAll("/date/", date).replaceAll("/player/", player).replaceAll("/message/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/owner/", owner == null ? "Nobody" : owner).replaceAll("/n/", lineSeparator);
+	}
 	
 	public final void broadcast() {
 		Bukkit.broadcast(Skyotickets.messages.Messages_1.replaceAll("/player/", player).replaceAll("/ticket/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/n/", "\n"), "ticket.view.ticket");

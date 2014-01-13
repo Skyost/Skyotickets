@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import fr.skyost.tickets.Ticket.TicketStatus;
 import fr.skyost.tickets.listeners.CommandsExecutor;
 import fr.skyost.tickets.listeners.EventsListener;
+import fr.skyost.tickets.threads.SocketListener;
 import fr.skyost.tickets.utils.MetricsLite;
 import fr.skyost.tickets.utils.Skyupdater;
 
@@ -24,6 +25,7 @@ public class Skyotickets extends JavaPlugin {
 	public static ConfigFile config;
 	public static MessagesFile messages;
 	public static File ticketsFolder;
+	private SocketListener socketListener;
 	
 	@Override
 	public final void onEnable() {
@@ -38,7 +40,7 @@ public class Skyotickets extends JavaPlugin {
 			}
 			final CommandExecutor executor = new CommandsExecutor();
 			PluginCommand command = this.getCommand("ticket");
-			command.setUsage(ChatColor.RED + "/ticket <text>.");
+			command.setUsage(ChatColor.RED + "/ticket [text].");
 			command.setExecutor(executor);
 			this.getCommand("mytickets").setExecutor(executor);
 			command = this.getCommand("mtickets");
@@ -48,10 +50,26 @@ public class Skyotickets extends JavaPlugin {
 			if(config.EnableUpdater) {
 				new Skyupdater(this, 71984, this.getFile(), true, true);
 			}
+			if(config.Socket_Use) {
+				socketListener = new SocketListener(config.Socket_Host, config.Socket_Port, config.Socket_Password, Bukkit.getConsoleSender());
+				socketListener.start();
+			}
 			new MetricsLite(this).start();
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public final void onDisable() {
+		if(socketListener != null) {
+			try {
+				socketListener.disable();
+			}
+			catch(IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 	
@@ -127,8 +145,7 @@ public class Skyotickets extends JavaPlugin {
 	}
 	
 	public static final File getPlayerDir(final String player) {
-		final File playerDir = new File(Skyotickets.ticketsFolder + System.getProperty("file.separator", "\\") + player);
-		return playerDir;
+		return new File(Skyotickets.ticketsFolder + System.getProperty("file.separator", "\\") + player);
 	}
 
 }

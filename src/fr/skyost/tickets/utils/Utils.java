@@ -42,5 +42,9 @@ public class Utils {
 	public static String date() {
 		return new SimpleDateFormat(Skyotickets.config.DateFormat).format(new Date());
 	}
+	
+	public static String removeColorCodes(String str) {
+		return str.replaceAll("(?i)&([a-f0-9k-or])", "");
+	}
 
 }

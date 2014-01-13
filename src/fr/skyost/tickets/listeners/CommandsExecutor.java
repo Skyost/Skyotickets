@@ -103,7 +103,7 @@ public class CommandsExecutor implements CommandExecutor {
 								sender.sendMessage(Skyotickets.messages.Messages_12);
 								return true;
 							}
-							for(Ticket playerTickets : tickets) {
+							for(final Ticket playerTickets : tickets) {
 								sender.sendMessage(playerTickets.getFormattedString());
 								sender.sendMessage(ChatColor.GOLD + "-------------------------------");
 							}
@@ -181,6 +181,10 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 					if(ticket.getOwner().equals(senderName)) {
 						Utils.delete(ticket.getFile());
+						final File playerDir = Skyotickets.getPlayerDir(ticket.getPlayer());
+						if(playerDir.list().length == 0) {
+							Utils.delete(playerDir);
+						}
 						sender.sendMessage(Skyotickets.messages.Messages_10);
 						player = Bukkit.getPlayer(ticket.getPlayer());
 						if(player != null) {
@@ -203,7 +207,7 @@ public class CommandsExecutor implements CommandExecutor {
 						return true;
 					}
 					if(args.length < 3) {
-						sender.sendMessage(ChatColor.RED + "/mtickets claim <player> <id>.");
+						sender.sendMessage(ChatColor.RED + "/mtickets claim [player] [id].");
 						return true;
 					}
 					ticket = Skyotickets.getTicket(args[1], args[2]);
@@ -212,6 +216,7 @@ public class CommandsExecutor implements CommandExecutor {
 						return true;
 					}
 					if(ticket.setOwner(senderName)) {
+						ticket.setStatus(TicketStatus.TAKEN);
 						ticket.saveToFile();
 						final String playerName = ticket.getPlayer();
 						sender.sendMessage(Skyotickets.messages.Messages_3.replaceAll("/player/", playerName));
@@ -236,7 +241,7 @@ public class CommandsExecutor implements CommandExecutor {
 						return true;
 					}
 					if(args.length < 4) {
-						sender.sendMessage(ChatColor.RED + "/mtickets view <player> <id> <status>.");
+						sender.sendMessage(ChatColor.RED + "/mtickets view [player] [id] [status].");
 						return true;
 					}
 					if(!Utils.isTicketStatus(args[3])) {
@@ -279,7 +284,7 @@ public class CommandsExecutor implements CommandExecutor {
 							return true;
 						}
 						if(args.length < 3) {
-							sender.sendMessage(ChatColor.RED + "/mtickets teleport (or tp) <player> <id>.");
+							sender.sendMessage(ChatColor.RED + "/mtickets teleport (or tp) [player] [id].");
 							return true;
 						}
 						ticket = Skyotickets.getTicket(args[1], args[2]);
