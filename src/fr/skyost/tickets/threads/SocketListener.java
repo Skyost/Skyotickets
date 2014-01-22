@@ -1,10 +1,12 @@
 package fr.skyost.tickets.threads;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,8 +35,8 @@ public class SocketListener extends Thread {
 	private InetAddress inetAdress;
 	private ServerSocket serverSocket;
 	private Socket socket;
-	private DataOutputStream sender;
-	private BufferedReader input;
+	private PrintWriter sender;
+	private BufferedReader reader;
 	private String line;
 	private String[] command;
 	private String response;
@@ -57,31 +59,33 @@ public class SocketListener extends Thread {
 		try {
 			while(true) {
 				socket = serverSocket.accept();
-				sender = new DataOutputStream(socket.getOutputStream());
-				input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				line = input.readLine();
+				sender = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				line = reader.readLine();
 				command = line.toLowerCase().split(" ");
-				if(Skyotickets.config.Socket_Log) {
-					console.sendMessage("[Skyotickets] Command performed from remote : '" + line + "'. Sending data...");
-				}
 				inetAdress = socket.getInetAddress();
-				if(!authCache.contains(inetAdress)) {
-					if(command[0].equals("auth")) {
-						if(command[1].equals(password)) {
-							if(!authCache.contains(inetAdress)) {
-								authCache.add(inetAdress);
-							}
-							response = "You are authenticated.";
+				if(Skyotickets.config.Socket_Log) {
+					console.sendMessage("[Skyotickets] Command performed from '" + inetAdress.getHostAddress() + "' : '" + line + "'. Sending data...");
+				}
+				if(command.length != 0) {
+					response = "Command not found./n/Available commands : auth [password], view <player> <id>, delete <player> <id>, claim [player] [id] or status [player] [id].";
+				}
+				if(command[0].equals("auth")) {
+					if(command[1].equals(password)) {
+						if(!authCache.contains(inetAdress)) {
+							authCache.add(inetAdress);
 						}
-						else {
-							response = "Bad password.";
-						}
+						response = "You are authenticated.";
 					}
 					else {
-						response = "You need to be authenticated. The command must be 'auth [password]'.";
+						response = "Bad password.";
 					}
 				}
 				else {
+					if(!authCache.contains(inetAdress)) {
+						response = "You need to be authenticated. The command must be 'auth [password]'.";
+						break;
+					}
 					Player player;
 					Ticket ticket;
 					try {
@@ -227,7 +231,7 @@ public class SocketListener extends Thread {
 						ex.printStackTrace();
 					}
 				}
-				sender.writeUTF(ChatColor.stripColor(response));
+				sender.println(ChatColor.stripColor(response));
 				sender.flush();
 				if(Skyotickets.config.Socket_Log) {
 					console.sendMessage("[Skyotickets] Sent !");

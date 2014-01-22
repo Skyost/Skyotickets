@@ -88,6 +88,9 @@ public class CommandsExecutor implements CommandExecutor {
 		else {
 			Ticket ticket;
 			Player player;
+			if(args.length == 0) {
+				return false;
+			}
 			switch(args[0].toLowerCase()) {
 			case "view" :
 				try {
