@@ -137,8 +137,10 @@ public class SocketListener extends Thread {
 									}
 								}
 								else {
-									for(final File file : Skyotickets.ticketsFolder.listFiles()) {
-										Utils.delete(file);
+									if(Skyotickets.ticketsFolder.exists()) {
+										for(final File file : Skyotickets.ticketsFolder.listFiles()) {
+											Utils.delete(file);
+										}
 									}
 								}
 								response = Skyotickets.messages.Messages_10;

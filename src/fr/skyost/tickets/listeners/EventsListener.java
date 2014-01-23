@@ -20,32 +20,34 @@ public class EventsListener implements Listener {
 	@EventHandler
 	private final void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
-		try {
-			final HashMap<String, ArrayList<Ticket>> tickets = Skyotickets.getTickets();
-			if(tickets == null) {
-				player.sendMessage(Skyotickets.messages.Messages_13);
-				return;
-			}
-			final String playerName = player.getName();
-			String owner;
-			final ArrayList<String> newTickets = new ArrayList<String>();
-			for(Entry<String, ArrayList<Ticket>> entry : tickets.entrySet()) {
-				for(Ticket ticket : entry.getValue()) {
-					owner = ticket.getOwner();
-					if(owner.equals(playerName) || (ticket.getStatus() == TicketStatus.OPEN && owner.equals("nobody"))) {
-						newTickets.add(ticket.getFormattedString());
+		if(player.hasPermission("ticket.view.ticket")) {
+			try {
+				final HashMap<String, ArrayList<Ticket>> tickets = Skyotickets.getTickets();
+				if(tickets == null) {
+					player.sendMessage(Skyotickets.messages.Messages_13);
+					return;
+				}
+				final String playerName = player.getName();
+				String owner;
+				final ArrayList<String> newTickets = new ArrayList<String>();
+				for(Entry<String, ArrayList<Ticket>> entry : tickets.entrySet()) {
+					for(Ticket ticket : entry.getValue()) {
+						owner = ticket.getOwner();
+						if(owner.equals(playerName) || (ticket.getStatus() == TicketStatus.OPEN && owner.equals("nobody"))) {
+							newTickets.add(ticket.getFormattedString());
+						}
 					}
 				}
+				for(String ticket : newTickets) {
+					player.sendMessage(ticket);
+					player.sendMessage(ChatColor.GOLD + "-------------------------------");
+				}
+				player.sendMessage(Skyotickets.messages.Messages_15.replaceAll("/n/", String.valueOf(newTickets.size())));
+				player.sendMessage(Skyotickets.messages.Messages_16);
 			}
-			for(String ticket : newTickets) {
-				player.sendMessage(ticket);
-				player.sendMessage(ChatColor.GOLD + "-------------------------------");
+			catch(IOException ex) {
+				ex.printStackTrace();
 			}
-			player.sendMessage(Skyotickets.messages.Messages_15.replaceAll("/n/", String.valueOf(newTickets.size())));
-			player.sendMessage(Skyotickets.messages.Messages_16);
-		}
-		catch(IOException ex) {
-			ex.printStackTrace();
 		}
 	}
 

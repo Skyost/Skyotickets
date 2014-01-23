@@ -26,7 +26,7 @@ public class ConfigFile extends Config {
 		CONFIG_HEADER += "\n              for more informations.                  #";
 		CONFIG_HEADER += "\n##################################################### #";
 		
-		TicketsFolder = new File(dataFolder + System.getProperty("file.separator", "\\") + "tickets").getPath();
+		TicketsFolder = new File(dataFolder + File.separator + "tickets").getPath();
     }
 
 }

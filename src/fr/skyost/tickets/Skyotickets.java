@@ -128,6 +128,9 @@ public class Skyotickets extends JavaPlugin {
 	}
 	
 	public static final HashMap<String, ArrayList<Ticket>> getTickets() throws IOException {
+		if(!ticketsFolder.exists()) {
+			ticketsFolder.mkdir();
+		}
 		final File[] playersDir = ticketsFolder.listFiles();
 		if(playersDir.length == 0) {
 			return null;
@@ -144,7 +147,10 @@ public class Skyotickets extends JavaPlugin {
 	}
 	
 	public static final File getPlayerDir(final String player) {
-		return new File(Skyotickets.ticketsFolder + System.getProperty("file.separator", "\\") + player);
+		if(!ticketsFolder.exists()) {
+			ticketsFolder.mkdir();
+		}
+		return new File(ticketsFolder + File.separator + player);
 	}
 
 }

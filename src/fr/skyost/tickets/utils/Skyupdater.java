@@ -49,7 +49,7 @@ public class Skyupdater {
 	private String response;
 	private Thread updaterThread;
 	
-	private static final String SKYUPDATER_VERSION = "0.3";
+	private static final String SKYUPDATER_VERSION = "0.3.1";
 	
 	public enum Result {
 		
@@ -140,8 +140,7 @@ public class Skyupdater {
 		if(!updateFolder.exists()) {
 			updateFolder.mkdir();
 		}
-		final Properties systemProperties = System.getProperties();
-		skyupdaterFolder = new File(plugin.getDataFolder().getParentFile() + systemProperties.getProperty("file.separator", "/") + "Skyupdater");
+		skyupdaterFolder = new File(plugin.getDataFolder().getParentFile() + System.getProperty("file.separator", "/") + "Skyupdater");
 		if(!skyupdaterFolder.exists()) {
 			skyupdaterFolder.mkdir();
 		}
@@ -161,7 +160,7 @@ public class Skyupdater {
 			}
 		}
 		else {
-			final String lineSeparator = systemProperties.getProperty("line.separator", "\n");
+			final String lineSeparator = System.lineSeparator();
 			config.put("enable", "true");
 			config.put("api-key", "NONE");
 			final StringBuilder stringBuilder = new StringBuilder();

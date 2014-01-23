@@ -166,8 +166,10 @@ public class CommandsExecutor implements CommandExecutor {
 								sender.sendMessage(ChatColor.RED + "You don't have permission to perform this action.");
 								return true;
 							}
-							for(final File file : Skyotickets.ticketsFolder.listFiles()) {
-								Utils.delete(file);
+							if(Skyotickets.ticketsFolder.exists()) {
+								for(final File file : Skyotickets.ticketsFolder.listFiles()) {
+									Utils.delete(file);
+								}
 							}
 						}
 						sender.sendMessage(Skyotickets.messages.Messages_10);
