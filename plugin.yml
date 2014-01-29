@@ -1,7 +1,7 @@
 name: Skyotickets
 main: fr.skyost.tickets.Skyotickets
 description: A powerful ticket plugin.
-version: 0.3.3
+version: 0.4
 author: Skyost
 website: http://www.skyost.eu
 commands:

@@ -50,7 +50,7 @@ public class CommandsExecutor implements CommandExecutor {
 					sender.sendMessage(Skyotickets.messages.Messages_2);
 				}
 				catch(IOException ex) {
-					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					sender.sendMessage(ChatColor.RED + "Error '" + ex + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 			}
@@ -86,8 +86,8 @@ public class CommandsExecutor implements CommandExecutor {
 			}
 		}
 		else {
-			Ticket ticket;
-			Player player;
+			final Ticket ticket;
+			final Player player;
 			if(args.length == 0) {
 				return false;
 			}
@@ -144,7 +144,7 @@ public class CommandsExecutor implements CommandExecutor {
 					sender.sendMessage(ticket.getFormattedString());
 				}
 				catch(IOException ex) {
-					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					sender.sendMessage(ChatColor.RED + "Error '" + ex + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -201,7 +201,7 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
-					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					sender.sendMessage(ChatColor.RED + "Error '" + ex + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -235,7 +235,7 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
-					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					sender.sendMessage(ChatColor.RED + "Error '" + ex + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -276,7 +276,7 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
-					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					sender.sendMessage(ChatColor.RED + "Error '" + ex + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;
@@ -298,6 +298,9 @@ public class CommandsExecutor implements CommandExecutor {
 							return true;
 						}
 						final String[] location = ticket.getLocation();
+						if(Joiner.on("").join(location).contains(Skyotickets.config.NoData)) {
+							sender.sendMessage(Skyotickets.messages.Messages_18);
+						}
 						final World world = Bukkit.getWorld(location[0]);
 						if(world == null) {
 							sender.sendMessage(Skyotickets.messages.Messages_17);
@@ -310,7 +313,7 @@ public class CommandsExecutor implements CommandExecutor {
 					}
 				}
 				catch(IOException ex) {
-					sender.sendMessage(ChatColor.RED + "Error '" + ex.getLocalizedMessage() + "' ! Please notify your server admin.");
+					sender.sendMessage(ChatColor.RED + "Error '" + ex + "' ! Please notify your server admin.");
 					ex.printStackTrace();
 				}
 				break;

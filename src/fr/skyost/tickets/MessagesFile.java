@@ -7,7 +7,7 @@ import fr.skyost.tickets.utils.Config;
 
 public class MessagesFile extends Config {
 	
-	public String Messages_1 = "§1/player/ has made a ticket :/n/'/ticket/'/n/His location is [World : /world/, X : /x/, Y : /y/, Z : /z/.";
+	public String Messages_1 = "§1/player/ has made a ticket :/n/'/ticket/'/n/His location is [World : /world/, X : /x/, Y : /y/, Z : /z/.]";
 	public String Messages_2 = "Your ticket has been created.";
 	public String Messages_3 = "§2You have claimed the ticket of /player/.";
 	public String Messages_4 = "§2Your ticket has been claimed by /player/. You can see the progress by using the command '/mytickets'.";
@@ -24,6 +24,7 @@ public class MessagesFile extends Config {
 	public String Messages_15 = "You have /n/ new ticket(s).";
 	public String Messages_16 = "The above list is scrollable.";
 	public String Messages_17 = "§4The world specified in this ticket was not found. Please try to teleport yourself at the ticket's location.";
+	public String Messages_18 = "§4This ticket has been created from a remote installation and a data is missing. You cannot be teleported.";
 	
     public MessagesFile(Plugin plugin) {
 		CONFIG_FILE = new File(plugin.getDataFolder(), "messages.yml");
