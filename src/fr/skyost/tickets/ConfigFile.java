@@ -8,20 +8,29 @@ import fr.skyost.tickets.utils.Config;
 
 public class ConfigFile extends Config {
 	
-	public String FormattedString = "[STATUS : /status/]/n/[ID : /id/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owner/]";
-	public String DateFormat = "MM-dd-yyyy HH:mm:ss";
+	public String FormattedString = "[ID : /id/]/n/[PRIORITY : /priority/]/n/[STATUS : /status/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owner/]";
+	public String DateFormat = "MM/dd/yyyy HH:mm:ss";
 	public String NoData = "No data";
+	public String NoOwner = "Nobody";
 	public String TicketsFolder;
 	public int MaxTicketsByPlayer = -1;
 	public boolean EnableUpdater = true;
 	
 	public boolean Socket_Use = false;
-	public boolean Socket_Log = true;
+	public boolean Socket_Print = true;
 	public String Socket_Host = "localhost";
 	public int Socket_Port = 4343;
-	public ArrayList<String> Socket_WhiteListedAdress = new ArrayList<String>();
+	public ArrayList<String> Socket_WhiteListedAddress = new ArrayList<String>();
 	public String Socket_Password = "password";
 	public String Socket_Name = "Admin";
+	
+	public boolean Remote_Use = false;
+	public String Remote_Host = "localhost";
+	public int Remote_Port = 4343;
+	public String Remote_Password = "password";
+	
+	public boolean Log_Use = false;
+	public String Log_File;
 	
     public ConfigFile(final File dataFolder) throws UnknownHostException {
 		CONFIG_FILE = new File(dataFolder, "config.yml");
@@ -32,7 +41,8 @@ public class ConfigFile extends Config {
 		CONFIG_HEADER += "\n##################################################### #";
 		
 		TicketsFolder = new File(dataFolder + File.separator + "tickets").getPath();
-		Socket_WhiteListedAdress.add("127.0.0.1");
+		Log_File = new File(dataFolder, "log.txt").getPath();
+		Socket_WhiteListedAddress.add("127.0.0.1");
     }
 
 }

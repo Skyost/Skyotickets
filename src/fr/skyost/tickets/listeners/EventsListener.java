@@ -1,6 +1,5 @@
 package fr.skyost.tickets.listeners;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -14,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import fr.skyost.tickets.Ticket;
 import fr.skyost.tickets.Ticket.TicketStatus;
 import fr.skyost.tickets.Skyotickets;
+import fr.skyost.tickets.threads.RemoteControl;
 
 public class EventsListener implements Listener {
 	
@@ -22,6 +22,10 @@ public class EventsListener implements Listener {
 		final Player player = event.getPlayer();
 		if(player.hasPermission("ticket.view.ticket")) {
 			try {
+				if(Skyotickets.useRemoteDatabase) {
+					new RemoteControl(player, "skyotickets player-join " + player.getName()).start();
+					return;
+				}
 				final HashMap<String, ArrayList<Ticket>> tickets = Skyotickets.getTickets();
 				if(tickets == null) {
 					player.sendMessage(Skyotickets.messages.Messages_13);
@@ -30,22 +34,23 @@ public class EventsListener implements Listener {
 				final String playerName = player.getName();
 				String owner;
 				final ArrayList<String> newTickets = new ArrayList<String>();
-				for(Entry<String, ArrayList<Ticket>> entry : tickets.entrySet()) {
-					for(Ticket ticket : entry.getValue()) {
+				for(final Entry<String, ArrayList<Ticket>> entry : tickets.entrySet()) {
+					for(final Ticket ticket : entry.getValue()) {
 						owner = ticket.getOwner();
-						if(owner.equals(playerName) || (ticket.getStatus() == TicketStatus.OPEN && owner.equals("nobody"))) {
+						if(owner.equals(playerName) || (ticket.getStatus() == TicketStatus.OPEN && owner.equals(Skyotickets.config.NoOwner))) {
 							newTickets.add(ticket.getFormattedString());
 						}
 					}
 				}
-				for(String ticket : newTickets) {
+				for(final String ticket : newTickets) {
 					player.sendMessage(ticket);
 					player.sendMessage(ChatColor.GOLD + "-------------------------------");
 				}
 				player.sendMessage(Skyotickets.messages.Messages_15.replaceAll("/n/", String.valueOf(newTickets.size())));
 				player.sendMessage(Skyotickets.messages.Messages_16);
 			}
-			catch(IOException ex) {
+			catch(Exception ex) {
+				player.sendMessage(ChatColor.RED + "Exception occured : '" + ex + "'. Please notify your server admin.");
 				ex.printStackTrace();
 			}
 		}

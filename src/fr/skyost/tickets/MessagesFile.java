@@ -7,7 +7,7 @@ import fr.skyost.tickets.utils.Config;
 
 public class MessagesFile extends Config {
 	
-	public String Messages_1 = "§1/player/ has made a ticket :/n/'/ticket/'/n/His location is [World : /world/, X : /x/, Y : /y/, Z : /z/.]";
+	public String Messages_1 = "§1/player/ has made a ticket :/n/'/ticket/'/n/His location is [World : /world/, X : /x/, Y : /y/, Z : /z/.]/n/The priority is /priority/.";
 	public String Messages_2 = "Your ticket has been created.";
 	public String Messages_3 = "§2You have claimed the ticket of /player/.";
 	public String Messages_4 = "§2Your ticket has been claimed by /player/. You can see the progress by using the command '/mytickets'.";

@@ -48,7 +48,7 @@ public class Skyupdater {
 	private String response;
 	private Thread updaterThread;
 	
-	private static final String SKYUPDATER_VERSION = "0.3.3";
+	private static final String SKYUPDATER_VERSION = "0.3.4";
 	
 	public enum Result {
 		
@@ -384,7 +384,7 @@ public class Skyupdater {
 						return;
 					}
 					final String response = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-					if(!response.equals("[]")) {
+					if(response != null && !response.equals("[]")) {
 						final JSONArray jsonArray = (JSONArray)JSONValue.parseWithException(response);
 						final JSONObject jsonObject = (JSONObject)jsonArray.get(jsonArray.size() - 1);
 						updateData = new String[] {String.valueOf(jsonObject.get("downloadUrl")), String.valueOf(jsonObject.get("fileName")), String.valueOf(jsonObject.get("gameVersion")), String.valueOf(jsonObject.get("name")), String.valueOf(jsonObject.get("releaseType"))};
