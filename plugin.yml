@@ -8,7 +8,7 @@ commands:
  ticket:
   aliases: [tk]
   description: Make a ticket.
-  usage: /ticket <text>.
+  usage: /ticket [priority] [text].
   permission: ticket.request
  mytickets:
   aliases: [mtk]
