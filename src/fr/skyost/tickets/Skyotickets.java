@@ -51,6 +51,10 @@ public class Skyotickets extends JavaPlugin {
 				new Skyupdater(this, 71984, this.getFile(), true, true);
 			}
 			if(config.Socket_Use) {
+				if(config.Socket_Password.contains(" ")) {
+					config.Socket_Password.replaceAll(" ", "");
+					config.save();
+				}
 				socketListener = new SocketListener(config.Socket_Host, config.Socket_Port, config.Socket_Password, this.getDataFolder());
 				socketListener.start();
 				if(config.Remote_Use) {

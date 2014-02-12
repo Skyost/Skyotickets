@@ -7,8 +7,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+
+import com.google.common.base.Joiner;
 
 import fr.skyost.tickets.utils.Utils;
 
@@ -29,7 +36,7 @@ public class Ticket implements Serializable {
 	private String player;
 	private String message;
 	private String[] location;
-	private String owner;
+	private List<String> owners;
 	
 	/**
 	 * The available tickets priorities.
@@ -132,13 +139,39 @@ public class Ticket implements Serializable {
 	 * @param player The player which has made the ticket request.
 	 * @param message The ticket's message.
 	 * @param location The location of the player.
+	 * @param withSound If you want to broadcast the message with a "pop" sound.
+	 * 
+	 * @throws IOException InputOutputException.
+	 */
+	
+	public Ticket(final TicketPriority priority, final String player, final String message, final String[] location, final boolean withSound) throws IOException {
+		final File playerDir = Skyotickets.getPlayerDir(player);
+		this.id = playerDir.exists() ? String.valueOf(playerDir.listFiles().length + 1) : "1";
+		this.priority = priority;
+		this.status = TicketStatus.OPEN;
+		this.date = Utils.date();
+		this.player = player;
+		this.message = message;
+		this.location = location;
+		broadcast(withSound);
+		saveToFile();
+	}
+	
+	/**
+	 * Create a new ticket instance.
+	 * 
+	 * @param priority The ticket's priority.
+	 * @param player The player which has made the ticket request.
+	 * @param message The ticket's message.
+	 * @param location The location of the player.
 	 * @param broadcast Broadcast the current ticket on the server.
+	 * @param withSound If you want to broadcast the message with a "pop" sound.
 	 * @param saveToFile Save the current ticket into a file.
 	 * 
 	 * @throws IOException InputOutputException.
 	 */
 	
-	public Ticket(final TicketPriority priority, final String player, final String message, final String[] location, final boolean broadcast, final boolean saveToFile) throws IOException {
+	public Ticket(final TicketPriority priority, final String player, final String message, final String[] location, final boolean broadcast, final boolean withSound, final boolean saveToFile) throws IOException {
 		final File playerDir = Skyotickets.getPlayerDir(player);
 		this.id = playerDir.exists() ? String.valueOf(playerDir.listFiles().length + 1) : "1";
 		this.priority = priority;
@@ -148,7 +181,7 @@ public class Ticket implements Serializable {
 		this.message = message;
 		this.location = location;
 		if(broadcast) {
-			broadcast();
+			broadcast(withSound);
 		}
 		if(saveToFile) {
 			saveToFile();
@@ -172,7 +205,7 @@ public class Ticket implements Serializable {
 	 * @throws IOException InputOutputException.
 	 */
 	
-	public Ticket(final String id, final TicketPriority priority, final TicketStatus status, final String date, final String player, final String message, final String[] location, final String owner, final boolean broadcast, final boolean saveToFile) throws IOException {
+	public Ticket(final String id, final TicketPriority priority, final TicketStatus status, final String date, final String player, final String message, final String[] location, final List<String> owners, final boolean broadcast, final boolean saveToFile) throws IOException {
 		this.id = id;
 		this.priority = priority;
 		this.status = status;
@@ -180,7 +213,7 @@ public class Ticket implements Serializable {
 		this.player = player;
 		this.message = message;
 		this.location = location;
-		this.owner = owner;
+		this.owners = owners;
 		if(broadcast) {
 			broadcast();
 		}
@@ -207,8 +240,10 @@ public class Ticket implements Serializable {
 		this.player = ticket.getPlayer();
 		this.message = ticket.getMessage();
 		this.location = ticket.getLocation();
-		final String owner = ticket.getOwner();
-		this.owner = owner.equals(Skyotickets.config.NoOwner) ? null : owner;
+		final List<String> owners = ticket.getOwners();
+		if(!(owners.size() == 1 && owners.get(0).equals(Skyotickets.config.NoOwner))) {
+			this.owners = ticket.getOwners();
+		}
 	    objectInputStream.close();
 	}
 	
@@ -283,13 +318,13 @@ public class Ticket implements Serializable {
 	}
 	
 	/**
-	 * Get the owner of this ticket.
+	 * Get the owners of this ticket.
 	 * 
-	 * @return The owner.
+	 * @return The owners.
 	 */
 	
-	public final String getOwner() {
-		return owner == null ? Skyotickets.config.NoOwner : owner;
+	public final List<String> getOwners() {
+		return owners == null ? Arrays.asList(Skyotickets.config.NoOwner) : owners;
 	}
 	
 	/**
@@ -363,20 +398,30 @@ public class Ticket implements Serializable {
 	}
 	
 	/**
-	 * Set the owner of this ticket.
+	 * Add an owner on this ticket.
 	 * 
 	 * @param owner The owner.
-	 * 
-	 * @return <b>true</b> If the owner has been set with success.
-	 * <br><b>false</b> If the ticket has already an owner.
 	 */
 	
-	public final boolean setOwner(final String owner) {
-		if(this.owner == null) {
-			this.owner = owner;
-			return true;
+	public final boolean addOwner(final String owner) {
+		if(owners == null) {
+			owners = new ArrayList<String>();
 		}
-		return false;
+		if(owners.contains(owner)) {
+			return false;
+		}
+		owners.add(owner);
+		return true;
+	}
+	
+	/**
+	 * Set the owners of this ticket.
+	 * 
+	 * @param owners The owners.
+	 */
+	
+	public final void setOwners(final List<String> owners) {
+		this.owners = owners;
 	}
 	
 	/**
@@ -408,7 +453,7 @@ public class Ticket implements Serializable {
 	 */
 
 	public final String getFormattedString(final String lineSeparator) {
-		return Utils.colourize(Skyotickets.config.FormattedString.replaceAll("/id/", id).replaceAll("/priority/", priority.name()).replaceAll("/status/", status.name()).replaceAll("/date/", date).replaceAll("/player/", player).replaceAll("/message/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/owner/", owner == null ? Skyotickets.config.NoOwner : owner).replaceAll("/n/", lineSeparator));
+		return Utils.colourize(Skyotickets.config.FormattedString.replaceAll("/id/", id).replaceAll("/priority/", priority.name()).replaceAll("/status/", status.name()).replaceAll("/date/", date).replaceAll("/player/", player).replaceAll("/message/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/owners/", owners == null ? Skyotickets.config.NoOwner : Joiner.on(", ").join(owners)).replaceAll("/n/", lineSeparator));
 	}
 	
 	/**
@@ -416,8 +461,32 @@ public class Ticket implements Serializable {
 	 */
 	
 	public final void broadcast() {
-		Bukkit.broadcast(Skyotickets.messages.Messages_1.replaceAll("/player/", player).replaceAll("/ticket/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/priority/", priority.name()).replaceAll("/n/", "\n"), "ticket.view.ticket");
+		broadcast(false);
 	}
+	
+	/**
+	 * Broadcast a message which says that the ticket has been created.
+	 * 
+	 * @param withSound If you want to play a "pop" sound.
+	 */
+	
+	public final void broadcast(final boolean withSound) {
+		final String notification = Skyotickets.messages.Messages_1.replaceAll("/player/", player).replaceAll("/ticket/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/priority/", priority.name()).replaceAll("/n/", "\n");
+		for(final Player player : Bukkit.getOnlinePlayers()) {
+			if(player.hasPermission("ticket.view.ticket")) {
+				player.sendMessage(notification);
+				if(withSound) {
+					player.getWorld().playSound(player.getLocation(), Sound.CHICKEN_EGG_POP, 1F, 0.75F);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Save the ticket to a file.
+	 * 
+	 * @throws IOException InputOutputException.
+	 */
 	
 	public final void saveToFile() throws IOException {
 		final File playerDir = Skyotickets.getPlayerDir(player);
@@ -429,6 +498,10 @@ public class Ticket implements Serializable {
 		objectOutputStream.flush();
 		objectOutputStream.close();
 	}
+	
+	/**
+	 * Convert the ticket to a String.
+	 */
 	
 	@Override
 	public final String toString() {
@@ -453,7 +526,7 @@ public class Ticket implements Serializable {
 		builder.append("\n");
 		builder.append("Z : " + location[3]);
 		builder.append("\n");
-		builder.append("OWNER : " + owner == null ? Skyotickets.config.NoOwner : owner);
+		builder.append("OWNERS : " + Joiner.on(", ").join(owners));
 		return builder.toString();
 	}
 	

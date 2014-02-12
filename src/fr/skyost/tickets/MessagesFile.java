@@ -11,7 +11,7 @@ public class MessagesFile extends Config {
 	public String Messages_2 = "Your ticket has been created.";
 	public String Messages_3 = "§2You have claimed the ticket of /player/.";
 	public String Messages_4 = "§2Your ticket has been claimed by /player/. You can see the progress by using the command '/mytickets'.";
-	public String Messages_5 = "§4This ticket is already claimed by /player/.";
+	public String Messages_5 = "§4You have already claimed this ticket !";
 	public String Messages_6 = "§4You need to claim this ticket if you want to use this command.";
 	public String Messages_7 = "§4This ticket does not exists !";
 	public String Messages_8 = "§2You have changed the status of this ticket to : /status/.";

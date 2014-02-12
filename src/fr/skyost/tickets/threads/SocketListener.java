@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -138,8 +139,8 @@ public class SocketListener extends Thread {
 										stringBuilder.append(",");
 									}
 									location = stringBuilder.toString().split(",");
-									new Ticket(TicketPriority.valueOf(command[3]), command[2], message, location);
-									message = "skyotickets broadcast " + Skyotickets.messages.Messages_1.replaceAll("/player/", command[2]).replaceAll("/ticket/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/priority/", command[3].toUpperCase());
+									new Ticket(TicketPriority.valueOf(command[3]), command[2], message, location, Skyotickets.config.PlaySound);
+									message = "skyotickets broadcast " + Skyotickets.messages.Messages_1.replaceAll("/player/", command[2]).replaceAll("/ticket/", message).replaceAll("/world/", location[0]).replaceAll("/x/", location[1]).replaceAll("/y/", location[2]).replaceAll("/z/", location[3]).replaceAll("/priority/", command[3].toUpperCase()) + " " + Skyotickets.config.PlaySound;
 									for(final SocketAddress remote : SocketListener.skyotickets) {
 										new PrintWriter(new Socket(remote.inetAddress, remote.port).getOutputStream(), true).println(message);
 									}
@@ -219,7 +220,7 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_7;
 										break;
 									}
-									if(ticket.getOwner().equals(command[2])) {
+									if(ticket.getOwners().contains(command[2])) {
 										Utils.delete(ticket.getFile());
 										final File playerDir = Skyotickets.getPlayerDir(ticket.getPlayer());
 										if(playerDir.list().length == 0) {
@@ -246,13 +247,13 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_7;
 										break;
 									}
-									if(ticket.setOwner(command[2])) {
+									if(ticket.addOwner(command[2])) {
 										ticket.setStatus(TicketStatus.TAKEN);
 										ticket.saveToFile();
 										response = "true";
 									}
 									else {
-										response = Skyotickets.messages.Messages_5.replaceAll("/player/", ticket.getOwner());
+										response = Skyotickets.messages.Messages_5;
 									}
 								}
 								catch(Exception ex) {
@@ -270,7 +271,7 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_7;
 										break;
 									}
-									if(ticket.getOwner().equals(command[2])) {
+									if(ticket.getOwners().contains(command[2])) {
 										final TicketStatus status = TicketStatus.valueOf(command[5]);
 										ticket.setStatus(status);
 										ticket.saveToFile();
@@ -316,12 +317,12 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_13;
 										break;
 									}
-									String owner;
+									List<String> owners;
 									final ArrayList<String> newTickets = new ArrayList<String>();
 									for(final Entry<String, ArrayList<Ticket>> entry : tickets.entrySet()) {
 										for(Ticket newTicket : entry.getValue()) {
-											owner = newTicket.getOwner();
-											if(owner.equals(command[2]) || (newTicket.getStatus() == TicketStatus.OPEN && owner.equals(Skyotickets.config.NoOwner))) {
+											owners = newTicket.getOwners();
+											if(owners.contains(command[2]) || (newTicket.getStatus() == TicketStatus.OPEN && (owners.size() == 0 && owners.get(0).equals(Skyotickets.config.NoOwner)))) {
 												newTickets.add(newTicket.getFormattedString("/n/"));
 											}
 										}
@@ -343,7 +344,16 @@ public class SocketListener extends Thread {
 								}
 								break;
 							case "broadcast":
-								Bukkit.broadcast(line.substring(22).replaceAll("/n/", "\n"), "ticket.view.ticket");
+								final String notification = line.substring(22).replaceAll("/n/", "\n");
+								final boolean withSound = Boolean.valueOf(command[command.length - 1]);
+								for(final Player localPlayer : Bukkit.getOnlinePlayers()) {
+									if(localPlayer.hasPermission("ticket.view.ticket")) {
+										localPlayer.sendMessage(notification);
+										if(withSound) {
+											localPlayer.getWorld().playSound(localPlayer.getLocation(), Sound.CHICKEN_EGG_POP, 1F, 0.75F);
+										}
+									}
+								}
 								response = "true";
 								break;
 							case "send":
@@ -414,7 +424,7 @@ public class SocketListener extends Thread {
 											response = stringBuilder.toString();
 											break;
 										}
-										new Ticket(TicketPriority.valueOf(command[2]), command[1], message, stringBuilder.toString().split(","));
+										new Ticket(TicketPriority.valueOf(command[2]), command[1], message, stringBuilder.toString().split(","), Skyotickets.config.PlaySound);
 										response = Skyotickets.messages.Messages_2;
 										break;
 									}
@@ -481,7 +491,7 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_7;
 										break;
 									}
-									if(ticket.getOwner().equals(Skyotickets.config.Socket_Name)) {
+									if(ticket.getOwners().contains(Skyotickets.config.Socket_Name)) {
 										Utils.delete(ticket.getFile());
 										playerDir = Skyotickets.getPlayerDir(ticket.getPlayer());
 										if(playerDir.list().length == 0) {
@@ -507,7 +517,7 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_7;
 										break;
 									}
-									if(ticket.setOwner(Skyotickets.config.Socket_Name)) {
+									if(ticket.addOwner(Skyotickets.config.Socket_Name)) {
 										ticket.setStatus(TicketStatus.TAKEN);
 										ticket.saveToFile();
 										final String playerName = ticket.getPlayer();
@@ -518,7 +528,7 @@ public class SocketListener extends Thread {
 										}
 									}
 									else {
-										response = Skyotickets.messages.Messages_5.replaceAll("/player/", ticket.getOwner());
+										response = Skyotickets.messages.Messages_5;
 									}
 									break;
 								case "status":
@@ -539,7 +549,7 @@ public class SocketListener extends Thread {
 										response = Skyotickets.messages.Messages_7;
 										break;
 									}
-									if(ticket.getOwner().equals(Skyotickets.config.Socket_Name)) {
+									if(ticket.getOwners().contains(Skyotickets.config.Socket_Name)) {
 										final TicketStatus status = TicketStatus.valueOf(command[3].toUpperCase());
 										ticket.setStatus(status);
 										ticket.saveToFile();

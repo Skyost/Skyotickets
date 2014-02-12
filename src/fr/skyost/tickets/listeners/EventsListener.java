@@ -2,6 +2,7 @@ package fr.skyost.tickets.listeners;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -32,12 +33,12 @@ public class EventsListener implements Listener {
 					return;
 				}
 				final String playerName = player.getName();
-				String owner;
+				List<String> owners;
 				final ArrayList<String> newTickets = new ArrayList<String>();
 				for(final Entry<String, ArrayList<Ticket>> entry : tickets.entrySet()) {
 					for(final Ticket ticket : entry.getValue()) {
-						owner = ticket.getOwner();
-						if(owner.equals(playerName) || (ticket.getStatus() == TicketStatus.OPEN && owner.equals(Skyotickets.config.NoOwner))) {
+						owners = ticket.getOwners();
+						if(owners.contains(playerName) || (ticket.getStatus() == TicketStatus.OPEN && (owners.size() == 1 && owners.get(0).equals(Skyotickets.config.NoOwner)))) {
 							newTickets.add(ticket.getFormattedString());
 						}
 					}

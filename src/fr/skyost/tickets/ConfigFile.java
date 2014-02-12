@@ -8,7 +8,8 @@ import fr.skyost.tickets.utils.Config;
 
 public class ConfigFile extends Config {
 	
-	public String FormattedString = "[ID : /id/]/n/[PRIORITY : /priority/]/n/[STATUS : /status/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owner/]";
+	public String FormattedString = "[ID : /id/]/n/[PRIORITY : /priority/]/n/[STATUS : /status/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owners/]";
+	public boolean PlaySound = true;
 	public String DateFormat = "MM/dd/yyyy HH:mm:ss";
 	public String NoData = "No data";
 	public String NoOwner = "Nobody";
@@ -18,9 +19,9 @@ public class ConfigFile extends Config {
 	
 	public boolean Socket_Use = false;
 	public boolean Socket_Print = true;
+	public ArrayList<String> Socket_WhiteListedAddress = new ArrayList<String>();
 	public String Socket_Host = "localhost";
 	public int Socket_Port = 4343;
-	public ArrayList<String> Socket_WhiteListedAddress = new ArrayList<String>();
 	public String Socket_Password = "password";
 	public String Socket_Name = "Admin";
 	

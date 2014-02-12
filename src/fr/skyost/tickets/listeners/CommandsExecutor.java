@@ -79,7 +79,7 @@ public class CommandsExecutor implements CommandExecutor {
 							new RemoteControl(remote.inetAddress, remote.port, sender, false, "skyotickets broadcast " + broadcast).start();
 						}
 					}
-					new Ticket(TicketPriority.valueOf(args[0]), senderName, message, new String[]{location.getWorld().getName(), String.valueOf(location.getBlockX()), String.valueOf(location.getBlockY()), String.valueOf(location.getBlockZ())});
+					new Ticket(TicketPriority.valueOf(args[0]), senderName, message, new String[]{location.getWorld().getName(), String.valueOf(location.getBlockX()), String.valueOf(location.getBlockY()), String.valueOf(location.getBlockZ())}, Skyotickets.config.PlaySound);
 					sender.sendMessage(Skyotickets.messages.Messages_2);
 				}
 				catch(Exception ex) {
@@ -262,7 +262,7 @@ public class CommandsExecutor implements CommandExecutor {
 						sender.sendMessage(Skyotickets.messages.Messages_7);
 						return true;
 					}
-					if(ticket.getOwner().equals(senderName)) {
+					if(ticket.getOwners().contains(senderName)) {
 						Utils.delete(ticket.getFile());
 						final File playerDir = Skyotickets.getPlayerDir(ticket.getPlayer());
 						if(playerDir.list().length == 0) {
@@ -325,7 +325,7 @@ public class CommandsExecutor implements CommandExecutor {
 						sender.sendMessage(Skyotickets.messages.Messages_7);
 						return true;
 					}
-					if(ticket.setOwner(senderName)) {
+					if(ticket.addOwner(senderName)) {
 						ticket.setStatus(TicketStatus.TAKEN);
 						ticket.saveToFile();
 						sender.sendMessage(Skyotickets.messages.Messages_3.replaceAll("/player/", args[1]));
@@ -339,7 +339,7 @@ public class CommandsExecutor implements CommandExecutor {
 						}
 					}
 					else {
-						sender.sendMessage(Skyotickets.messages.Messages_5.replaceAll("/player/", ticket.getOwner()));
+						sender.sendMessage(Skyotickets.messages.Messages_5);
 					}
 				}
 				catch(Exception ex) {
@@ -392,7 +392,7 @@ public class CommandsExecutor implements CommandExecutor {
 						sender.sendMessage(Skyotickets.messages.Messages_7);
 						return true;
 					}
-					if(ticket.getOwner().equals(senderName)) {
+					if(ticket.getOwners().contains(senderName)) {
 						final TicketStatus status = TicketStatus.valueOf(args[3]);
 						ticket.setStatus(status);
 						ticket.saveToFile();
