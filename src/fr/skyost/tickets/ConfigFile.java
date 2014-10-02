@@ -1,49 +1,39 @@
 package fr.skyost.tickets;
 
 import java.io.File;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Arrays;
 
-import fr.skyost.tickets.utils.Config;
+import fr.skyost.tickets.utils.Skyoconfig;
 
-public class ConfigFile extends Config {
+public class ConfigFile extends Skyoconfig {
 	
-	public String FormattedString = "[ID : /id/]/n/[PRIORITY : /priority/]/n/[STATUS : /status/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owners/]";
-	public boolean PlaySound = true;
-	public String DateFormat = "MM/dd/yyyy HH:mm:ss";
-	public String NoData = "No data";
-	public String NoOwner = "Nobody";
-	public String TicketsFolder;
-	public int MaxTicketsByPlayer = -1;
-	public boolean EnableUpdater = true;
+	@ConfigOptions(name = "strings.nobody")
+	public String nobody = "Nobody";
+	@ConfigOptions(name = "strings.formatted-ticket")
+	public String formattedString = "[ID : /id/]/n/[PRIORITY : /priority/]/n/[STATUS : /status/]/n/[DATE : /date/]/n/[PLAYER : /player/]/n/[MESSAGE : /message/]/n/[WORLD : /world/, X : /x/, Y : /y/, Z : /z/]/n/[CLAIMED BY : /owners/]";
+	@ConfigOptions(name = "strings.date-format")
+	public String dateFormat = "MM/dd/yyyy HH:mm:ss";
 	
-	public boolean Socket_Use = false;
-	public boolean Socket_Print = true;
-	public ArrayList<String> Socket_WhiteListedAddress = new ArrayList<String>();
-	public String Socket_Host = "localhost";
-	public int Socket_Port = 4343;
-	public String Socket_Password = "password";
-	public String Socket_Name = "Admin";
+	@ConfigOptions(name = "settings.play-sound")
+	public boolean playSound = true;
+	@ConfigOptions(name = "settings.tickets-directory")
+	public String ticketsDir;
+	@ConfigOptions(name = "settings.max-tickets-player")
+	public int maxTicketsByPlayer = -1;
+	@ConfigOptions(name = "settings.logs.use")
+	public boolean logUse = false;
+	@ConfigOptions(name = "settings.logs.file")
+	public String logFile;
 	
-	public boolean Remote_Use = false;
-	public String Remote_Host = "localhost";
-	public int Remote_Port = 4343;
-	public String Remote_Password = "password";
+	@ConfigOptions(name = "enable.updater")
+	public boolean enableUpdater = true;
+	@ConfigOptions(name = "enable.metrics")
+	public boolean enableMetrics = true;
 	
-	public boolean Log_Use = false;
-	public String Log_File;
-	
-    public ConfigFile(final File dataFolder) throws UnknownHostException {
-		CONFIG_FILE = new File(dataFolder, "config.yml");
-		CONFIG_HEADER = "##################################################### #";
-		CONFIG_HEADER += "\n              Skyotickets Configuration               #";
-		CONFIG_HEADER += "\n See http://dev.bukkit.org/bukkit-plugins/skyotickets #";
-		CONFIG_HEADER += "\n              for more informations.                  #";
-		CONFIG_HEADER += "\n##################################################### #";
-		
-		TicketsFolder = new File(dataFolder + File.separator + "tickets").getPath();
-		Log_File = new File(dataFolder, "log.txt").getPath();
-		Socket_WhiteListedAddress.add("127.0.0.1");
+    public ConfigFile(final File dataFolder) {
+    	super(new File(dataFolder, "config.yml"), Arrays.asList("Skyotickets Configuration", "http://dev.bukkit.org/bukkit-plugins/skyotickets for more informations"));
+		ticketsDir = new File(dataFolder + File.separator + "tickets").getPath();
+		logFile = new File(dataFolder, "log.txt").getPath();
     }
 
 }

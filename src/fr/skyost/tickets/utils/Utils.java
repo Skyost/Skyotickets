@@ -1,29 +1,30 @@
 package fr.skyost.tickets.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import com.google.common.base.Charsets;
+
 import fr.skyost.tickets.Skyotickets;
 import fr.skyost.tickets.Ticket.TicketPriority;
 import fr.skyost.tickets.Ticket.TicketStatus;
 
-/**
- * A super-ultra useful class.
- * 
- * @author Skyost
- */
-
 public class Utils {
 	
-	private static final File logFile = new File(Skyotickets.config.Log_File);
-	
-	/**
-	 * Delete a file or a folder.
-	 * 
-	 * @param path The path of the file.
-	 */
+	private static final File logFile = new File(Skyotickets.config.logFile);
 	
 	public static final void delete(final File path) {
 		if(path.isDirectory()) {
@@ -46,57 +47,27 @@ public class Utils {
 		}
 	}
 	
-	/**
-	 * Check if the string is a ticket priority.
-	 * 
-	 * @param string The string.
-	 * 
-	 * @return <b>true</b> If the string is a ticket priority.
-	 * <br><b>false</b> If the string is not a ticket priority.
-	 */
-	
 	public static final boolean isTicketPriority(final String string) {
-		for(final TicketPriority priority : TicketPriority.values()) {
-			if(priority.name().equalsIgnoreCase(string)) {
-				return true;
-			}
+		try {
+			TicketPriority.valueOf(string);
+			return true;
 		}
+		catch(final IllegalArgumentException ex) {}
 		return false;
 	}
-	
-	/**
-	 * Check if the string is a ticket status.
-	 * 
-	 * @param string The string.
-	 * 
-	 * @return <b>true</b> If the string is a ticket status.
-	 * <br><b>false</b> If the string is not a ticket status.
-	 */
 	
 	public static final boolean isTicketStatus(final String string) {
-		for(final TicketStatus status : TicketStatus.values()) {
-			if(status.name().equalsIgnoreCase(string)) {
-				return true;
-			}
+		try {
+			TicketStatus.valueOf(string);
+			return true;
 		}
+		catch(final IllegalArgumentException ex) {}
 		return false;
 	}
 	
-	/**
-	 * Get the current date.
-	 * 
-	 * @return The current date.
-	 */
-	
 	public static final String date() {
-		return new SimpleDateFormat(Skyotickets.config.DateFormat).format(new Date());
+		return new SimpleDateFormat(Skyotickets.config.dateFormat).format(new Date());
 	}
-	
-	/**
-	 * Log some messages to the default file.
-	 * 
-	 * @param messages Every messages you want to log.
-	 */
 	
 	public static final void log(final String... messages) {
 		try {
@@ -114,14 +85,62 @@ public class Utils {
 		}
 	}
 	
-	/**
-	 * Colourize a String.
-	 * 
-	 * @param string The String you want to colourize.
-	 */
+	public static final String getFileContent(final File file, final String lineSeparator) throws IOException {
+		final BufferedReader reader = new BufferedReader(new FileReader(file));
+		final StringBuilder builder = new StringBuilder();
+		try {
+			String line = reader.readLine();
+			while(line != null) {
+				builder.append(line);
+				if(lineSeparator != null) {
+					builder.append(lineSeparator);
+				}
+				line = reader.readLine();
+			}
+		}
+		finally {
+			reader.close();
+		}
+		return builder.toString();
+	}
 	
-	public static final String colourize(final String string) {
-		return (" " + string).replaceAll("([^\\\\](\\\\\\\\)*)&(.)", "$1§$3").replaceAll("([^\\\\](\\\\\\\\)*)&(.)", "$1§$3").replaceAll("(([^\\\\])\\\\((\\\\\\\\)*))&(.)", "$2$3&$5").replaceAll("\\\\\\\\", "\\\\").trim();
+	public static final void writeToFile(final File file, final String content) throws IOException {
+		final FileWriter fileWriter = new FileWriter(file, false);
+		final PrintWriter printWriter = new PrintWriter(fileWriter, true);
+		printWriter.println(content);
+		printWriter.close();
+		fileWriter.close();
+	}
+	
+	public static final OfflinePlayer getPlayerByArgument(final String arg) {
+		final UUID uuid = uuidTryParse(arg);
+		final OfflinePlayer player = uuid == null ? Bukkit.getOfflinePlayer(arg) : Bukkit.getOfflinePlayer(uuid);
+		if(player == null && uuid == null) {
+			return Bukkit.getOfflinePlayer(UUID.nameUUIDFromBytes(("OfflinePlayer:" + arg).getBytes(Charsets.UTF_8)));
+		}
+		return player;
+	}
+	
+	public static final UUID uuidTryParse(final String string) {
+		try {
+			return UUID.fromString(string);
+		}
+		catch(final IllegalArgumentException ex){}
+		return null;
+	}
+	
+	public static final String locationSerialize(final Location location) {
+		final JSONObject json = new JSONObject();
+		json.put("world", location.getWorld().getName());
+		json.put("x", location.getX());
+		json.put("y", location.getY());
+		json.put("z", location.getZ());
+		return json.toJSONString();
+	}
+	
+	public static final Location locationDeserialize(final String serializedLocation) {
+		final JSONObject json = (JSONObject)JSONValue.parse(serializedLocation);
+		return new Location(Bukkit.getWorld(json.get("world").toString()), Double.parseDouble(json.get("x").toString()), Double.parseDouble(json.get("y").toString()), Double.parseDouble(json.get("z").toString()));
 	}
 
 }

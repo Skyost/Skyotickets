@@ -1,38 +1,51 @@
 package fr.skyost.tickets;
 
 import java.io.File;
-import org.bukkit.plugin.Plugin;
+import java.util.Arrays;
 
-import fr.skyost.tickets.utils.Config;
+import org.bukkit.ChatColor;
 
-public class MessagesFile extends Config {
+import fr.skyost.tickets.utils.Skyoconfig;
+
+public class MessagesFile extends Skyoconfig {
 	
-	public String Messages_1 = "§1/player/ has made a ticket :/n/'/ticket/'/n/His location is [World : /world/, X : /x/, Y : /y/, Z : /z/.]/n/The priority is /priority/.";
-	public String Messages_2 = "Your ticket has been created.";
-	public String Messages_3 = "§2You have claimed the ticket of /player/.";
-	public String Messages_4 = "§2Your ticket has been claimed by /player/. You can see the progress by using the command '/mytickets'.";
-	public String Messages_5 = "§4You have already claimed this ticket !";
-	public String Messages_6 = "§4You need to claim this ticket if you want to use this command.";
-	public String Messages_7 = "§4This ticket does not exists !";
-	public String Messages_8 = "§2You have changed the status of this ticket to : /status/.";
-	public String Messages_9 = "§2/player/ has changed your ticket's status to : /status/.";
-	public String Messages_10 = "§2Done !";
-	public String Messages_11 = "§4Your ticket has been deleted by /player/.";
-	public String Messages_12 = "§4Nothing to display.";
-	public String Messages_13 = "§2You have no new ticket(s), good job !";
-	public String Messages_14 = "§4You you cannot post a ticket anymore. Please wait that a moderator clear your ticket(s).";
-	public String Messages_15 = "You have /n/ new ticket(s).";
-	public String Messages_16 = "The above list is scrollable.";
-	public String Messages_17 = "§4The world specified in this ticket was not found. Please try to teleport yourself at the ticket's location.";
-	public String Messages_18 = "§4This ticket has been created from a remote installation and a data is missing. You cannot be teleported.";
+	@ConfigOptions(name = "messages.1")
+	public String message1 = ChatColor.DARK_BLUE + "/player/ has made a ticket :/n/" + ChatColor.WHITE + "'/ticket/'" + ChatColor.DARK_BLUE + "/n/His location is [World : /world/, X : /x/, Y : /y/, Z : /z/.]/n/The priority is /priority/.";
+	@ConfigOptions(name = "messages.2")
+	public String message2 = "Your ticket has been created.";
+	@ConfigOptions(name = "messages.3")
+	public String message3 = ChatColor.GREEN + "You have claimed the ticket of /player/.";
+	@ConfigOptions(name = "messages.4")
+	public String message4 = ChatColor.GREEN + "Your ticket has been claimed by /player/. You can see the progress by using the command '/mytickets'.";
+	@ConfigOptions(name = "messages.5")
+	public String message5 = ChatColor.DARK_RED + "You have already claimed this ticket !";
+	@ConfigOptions(name = "messages.6")
+	public String message6 = ChatColor.DARK_RED + "You need to claim this ticket if you want to use this command.";
+	@ConfigOptions(name = "messages.7")
+	public String message7 = ChatColor.DARK_RED + "This ticket does not exists !";
+	@ConfigOptions(name = "messages.8")
+	public String message8 = ChatColor.GREEN + "You have changed the status of this ticket to : /status/.";
+	@ConfigOptions(name = "messages.9")
+	public String message9 = ChatColor.GREEN + "/player/ has changed your ticket's status to : /status/.";
+	@ConfigOptions(name = "messages.10")
+	public String message10 = ChatColor.GREEN + "Done !";
+	@ConfigOptions(name = "messages.11")
+	public String message11 = ChatColor.DARK_RED + "Your ticket has been deleted by /player/.";
+	@ConfigOptions(name = "messages.12")
+	public String message12 = ChatColor.DARK_RED + "Nothing to display.";
+	@ConfigOptions(name = "messages.13")
+	public String message13 = ChatColor.GREEN + "You have no new ticket(s), good job !";
+	@ConfigOptions(name = "messages.14")
+	public String message14 = ChatColor.DARK_RED + "You you cannot post a ticket anymore. Please wait that a moderator clear your ticket(s).";
+	@ConfigOptions(name = "messages.15")
+	public String message15 = "You have /n/ new ticket(s).";
+	@ConfigOptions(name = "messages.16")
+	public String message16 = "The above list is scrollable.";
+	@ConfigOptions(name = "messages.17")
+	public String message17 = ChatColor.DARK_RED + "This player does not have any ticket.";
 	
-    public MessagesFile(Plugin plugin) {
-		CONFIG_FILE = new File(plugin.getDataFolder(), "messages.yml");
-		CONFIG_HEADER = "##################################################### #";
-		CONFIG_HEADER += "\n              Skyotickets Configuration               #";
-		CONFIG_HEADER += "\n See http://dev.bukkit.org/bukkit-plugins/skyotickets #";
-		CONFIG_HEADER += "\n              for more informations.                  #";
-		CONFIG_HEADER += "\n##################################################### #";
+    public MessagesFile(final File dataFolder) {
+    	super(new File(dataFolder, "messages.yml"), Arrays.asList("Skyotickets Messages"));
     }
 
 }

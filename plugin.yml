@@ -46,7 +46,7 @@ permissions:
    ticket.delete.all: true
  ticket.request:
   default: true
-  description: Allow you to use /ticket [text].
+  description: Allow you to use /ticket [priority] [text].
  ticket.mytickets:
   default: true
   description: Allow you to use /mytickets.
